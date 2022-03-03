@@ -1,5 +1,5 @@
 {
-  "name": "@rw/aws-aad",
+  "name": "aws-aad",
   "version": "3.4.1",
   "description": "Use Azure AD SSO to log into the AWS CLI.",
   "main": "index.js",

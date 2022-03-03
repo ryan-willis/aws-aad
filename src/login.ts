@@ -15,7 +15,7 @@ import https from "https";
 import { paths } from "./paths";
 import mkdirp from "mkdirp";
 
-const debug = _debug("aws-azure-login");
+const debug = _debug("aws-aad");
 
 const WIDTH = 425;
 const HEIGHT = 550;
@@ -130,12 +130,12 @@ const states = [
     async handler(page: puppeteer.Page): Promise<void> {
       debug("Account selector page detected");
 
-      let selector = "div.tile[role=listitem]";
+      const selector = "div.tile[role=listitem]";
       const found = await page.$$(selector);
-      let accounts = await Promise.all(
+      const accounts = await Promise.all(
         found.map(async (f) => {
-          let name = await page.evaluate(
-            (a) => String(a.textContent).trim(),
+          const name = await page.evaluate(
+            (a: Node) => String(a.textContent).trim(),
             f
           );
           return { name, element: f };
@@ -751,7 +751,7 @@ export const login = {
           } else {
             debug("State not recognized!");
             if (totalUnrecognizedDelay > MAX_UNRECOGNIZED_PAGE_DELAY) {
-              const path = "aws-azure-login-unrecognized-state.png";
+              const path = "aws-aad-unrecognized-state.png";
               await page.screenshot({ path });
               throw new CLIError(
                 `Unable to recognize page state! A screenshot has been dumped to ${path}. If this problem persists, try running with --mode=gui or --mode=debug`

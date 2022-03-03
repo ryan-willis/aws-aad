@@ -44,11 +44,11 @@ RUN apt-get update \
    && apt-get -q -y clean \
    && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 
-COPY package.json yarn.lock /aws-azure-login/
+COPY package.json yarn.lock /aws-aad/
 
-RUN cd /aws-azure-login \
+RUN cd /aws-aad \
    && yarn install --production
 
-COPY lib /aws-azure-login/lib
+COPY lib /aws-aad/lib
 
-ENTRYPOINT ["node", "/aws-azure-login/lib", "--no-sandbox"]
+ENTRYPOINT ["node", "/aws-aad/lib", "--no-sandbox"]
