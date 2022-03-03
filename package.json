@@ -1,23 +1,22 @@
 {
-  "name": "aws-azure-login",
-  "version": "3.4.0",
+  "name": "@rw/aws-aad",
+  "version": "3.4.1",
   "description": "Use Azure AD SSO to log into the AWS CLI.",
   "main": "index.js",
   "author": {
-    "name": "Kenneth Aasan",
-    "url": "https://github.com/kennethaasan"
+    "name": "Ryan Willis",
+    "url": "https://github.com/ryan-willis"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sportradar/aws-azure-login.git"
+    "url": "https://github.com/ryan-willis/aws-aad.git"
   },
-  "bugs": "https://github.com/sportradar/aws-azure-login/issues",
   "engines": {
     "node": ">=12.0"
   },
   "bin": {
-    "aws-azure-login": "lib/index.js"
+    "aws-aad": "lib/index.js"
   },
   "scripts": {
     "start": "ts-node-dev src/index.ts",

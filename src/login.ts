@@ -126,29 +126,21 @@ const states = [
   },
   {
     name: "account selection",
-    selector: `#aadTile > div > div.table-cell.tile-img > img`,
+    selector: `#tilesHolder div > div.table-cell.tile-img > img`,
     async handler(page: puppeteer.Page): Promise<void> {
-      debug("Multiple accounts associated with username.");
-      const aadTile = await page.$("#aadTileTitle");
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const aadTileMessage: string = await page.evaluate(
-        // eslint-disable-next-line
-        (a) => a.textContent,
-        aadTile
-      );
+      debug("Account selector page detected");
 
-      const msaTile = await page.$("#msaTileTitle");
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const msaTileMessage: string = await page.evaluate(
-        // eslint-disable-next-line
-        (m) => m.textContent,
-        msaTile
+      let selector = "div.tile[role=listitem]";
+      const found = await page.$$(selector);
+      let accounts = await Promise.all(
+        found.map(async (f) => {
+          let name = await page.evaluate(
+            (a) => String(a.textContent).trim(),
+            f
+          );
+          return { name, element: f };
+        })
       );
-
-      const accounts = [
-        { message: aadTileMessage, selector: "#aadTileTitle" },
-        { message: msaTileMessage, selector: "#msaTileTitle" },
-      ];
 
       let account;
       if (accounts.length === 0) {
@@ -157,28 +149,26 @@ const states = [
         account = accounts[0];
       } else {
         debug("Asking user to choose account");
-        console.log(
-          "It looks like this Username is used with more than one account from Microsoft. Which one do you want to use?"
-        );
+        console.log("Select an account");
         const answers = await inquirer.prompt([
           {
             name: "account",
             message: "Account:",
             type: "list",
-            choices: _.map(accounts, "message"),
-            default: aadTileMessage,
+            choices: accounts.map((a) => a.name),
+            default: accounts[0].name,
           } as Question,
         ]);
 
-        account = _.find(accounts, ["message", answers.account]);
+        account = accounts.find((a) => a.name === answers.account);
       }
 
       if (!account) {
+        debug("well, this is awkward");
         throw new Error("Unable to find account");
       }
 
-      debug(`Proceeding with account ${account.selector}`);
-      await page.click(account.selector);
+      await account.element.click();
       await Bluebird.delay(500);
     },
   },
